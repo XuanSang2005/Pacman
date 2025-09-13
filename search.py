@@ -89,7 +89,7 @@ def depthFirstSearch(problem: SearchProblem):
     "*** YOUR CODE HERE ***"
     from util import Stack
     move = Stack()
-    move.push(problem.getStartState(), [])
+    move.push((problem.getStartState(), []))
 
     visited = set()
     while not move.isEmpty():
@@ -113,18 +113,25 @@ def breadthFirstSearch(problem: SearchProblem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
     from util import Queue
-    move = Queue()
+    frontier = Queue()
     start_state = problem.getStartState()
-    move.push(start_state, [])
+    frontier.push((start_state, []))   # (state, path)
     visited = set()
-    while not move.isEmpty():
-        state, path = move.pop()
+
+    while not frontier.isEmpty():
+        state, path = frontier.pop()
+
+        if problem.isGoalState(state):
+            return path
+
         if state not in visited:
             visited.add(state)
-            for successor, action, stepcost in problem.getSuccessors(state):
+            for successor, action, stepCost in problem.getSuccessors(state):
                 if successor not in visited:
-                    move.push((successor, path + [action]))
-    return []
+                    frontier.push((successor, path + [action]))
+
+    return []   # no solution
+
     util.raiseNotDefined()
 
 def uniformCostSearch(problem: SearchProblem):
